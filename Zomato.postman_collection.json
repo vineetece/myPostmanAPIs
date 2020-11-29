@@ -1,0 +1,809 @@
+{
+	"info": {
+		"_postman_id": "14ad8a67-e61a-4c17-b93d-74545d77d296",
+		"name": "Zomato",
+		"description": "This is the Zomato API Test Suite.\r\n\r\n# API Key is b6b6f6e8ee337e63bbab701244fb34c8\r\n# BaseURL is https://developers.zomato.com/api/v2.1\r\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "Locations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eabeaca1-0458-45e3-9ab6-20637305353b",
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"entity_type = jsonData.location_suggestions[0].entity_type;\r",
+									"entity_id = jsonData.location_suggestions[0].entity_id;\r",
+									"latitude = jsonData.location_suggestions[0].latitude;\r",
+									"longitude = jsonData.location_suggestions[0].longitude;\r",
+									"title = jsonData.location_suggestions[0].title;\r",
+									"city_id = jsonData.location_suggestions[0].city_id;\r",
+									"city_name = jsonData.location_suggestions[0].city_name;\r",
+									"pm.globals.set(\"entity_type\", entity_type);\r",
+									"pm.globals.set(\"entity_id\", entity_id);\r",
+									"pm.globals.set(\"latitude\", latitude);\r",
+									"pm.globals.set(\"longitude\", longitude);\r",
+									"pm.globals.set(\"title\", title);\r",
+									"pm.globals.set(\"city_id\", city_id);\r",
+									"pm.globals.set(\"city_name\", city_name);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/locations?query={{query}}&count={{count}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"locations"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "{{query}}"
+								},
+								{
+									"key": "lat",
+									"value": "{{latitude}}",
+									"disabled": true
+								},
+								{
+									"key": "lon",
+									"value": "{{longitude}}",
+									"disabled": true
+								},
+								{
+									"key": "count",
+									"value": "{{count}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Location Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6e89a5d5-b502-4d17-83eb-0972efbb9ddc",
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"subzone = jsonData.subzone;\r",
+									"subzone_id = jsonData.subzone_id;\r",
+									"pm.globals.set(\"subzone\",subzone);\r",
+									"pm.globals.set(\"subzone_id\",subzone_id);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Title is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.location.title).to.eql(pm.globals.get(\"title\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/location_details?entity_id={{entity_id}}&entity_type={{entity_type}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"location_details"
+							],
+							"query": [
+								{
+									"key": "entity_id",
+									"value": "{{entity_id}}"
+								},
+								{
+									"key": "entity_type",
+									"value": "{{entity_type}}"
+								}
+							]
+						},
+						"description": "This API will give you location details."
+					},
+					"response": []
+				}
+			],
+			"description": "These APIs will give Zomato Locations and Location details.",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Common",
+			"item": [
+				{
+					"name": "Cities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d2422d53-e04a-438e-8013-a6e67ad008cf",
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Country name is correct\",function(){\r",
+									"country = jsonData.location_suggestions[0].country_name;\r",
+									"pm.expect(country).to.eql('India');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"City name is correct\",function(){\r",
+									"name = jsonData.location_suggestions[0].name;\r",
+									"pm.expect(name).to.eql(pm.globals.get(\"city_name\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/cities?city_ids={{city_id}}&count={{count}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"cities"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{query}}",
+									"disabled": true
+								},
+								{
+									"key": "lat",
+									"value": "{{latitude}}",
+									"disabled": true
+								},
+								{
+									"key": "lon",
+									"value": "{{longitude}}",
+									"disabled": true
+								},
+								{
+									"key": "city_ids",
+									"value": "{{city_id}}"
+								},
+								{
+									"key": "count",
+									"value": "{{count}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3d20d79e-1724-4db5-af27-3fe7c05e52a7",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"/** pm.test(\"Message - Inavlid API Key\", function () {\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.expect(jsonData.message) .to.equal(\"Invalid API Key\");\r",
+									"});\r",
+									"*/\r",
+									"pm.test(\"Response Time is less than 300ms\", function(){\r",
+									"pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('Category has Dine-Out option', function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    value = jsonData.categories[1].categories.name;\r",
+									"    pm.expect(value).to.eql('Dine-out');\r",
+									"});\r",
+									"\r",
+									"pm.test('Category has Delivery option', function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    value = jsonData.categories[0].categories.name;\r",
+									"    pm.expect(value).to.eql('Delivery');\r",
+									"});\r",
+									"\r",
+									"pm.test('Category has Nightlife option', function(){\r",
+									"    var jsonData = pm.response.json();\r",
+									"    value = jsonData.categories[2].categories.name;\r",
+									"    pm.expect(value).to.eql('Nightlife');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2b52912-4048-4ced-a7b6-6dba97d9589a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/categories",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "This API will give you the categories."
+					},
+					"response": []
+				},
+				{
+					"name": "Collections",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f37ff335-23a0-46a6-801b-4cd6ef26189e",
+								"exec": [
+									"var jsonData = pm.response.json;\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"/**collection_id = jsonData.collections[0].collection.collection_id;\r",
+									"pm.globals.set(\"collection_id\");\r",
+									"*/"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/collections?city_id={{city_id}}&count={{count}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"collections"
+							],
+							"query": [
+								{
+									"key": "city_id",
+									"value": "{{city_id}}"
+								},
+								{
+									"key": "lat",
+									"value": "{{latitude}}",
+									"disabled": true
+								},
+								{
+									"key": "long",
+									"value": "{{longitude}}",
+									"disabled": true
+								},
+								{
+									"key": "count",
+									"value": "{{count}}"
+								}
+							]
+						},
+						"description": "This API will return Zomato collections in a city."
+					},
+					"response": []
+				},
+				{
+					"name": "Cuisines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/cuisines?city_id={{city_id}}&lat={{latitude}}&long={{longitude}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"cuisines"
+							],
+							"query": [
+								{
+									"key": "city_id",
+									"value": "{{city_id}}"
+								},
+								{
+									"key": "lat",
+									"value": "{{latitude}}"
+								},
+								{
+									"key": "long",
+									"value": "{{longitude}}"
+								}
+							]
+						},
+						"description": "It will give a list of all cuisines in a city"
+					},
+					"response": []
+				},
+				{
+					"name": "Establishments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "24afd137-2cac-4d4a-ac9a-94b5acb43f31",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"var jsonData = pm.response.json;\r",
+									"est_id = jsonData.establishments[0].establishment.id;\r",
+									"pm.globals.set(\"establishment_id\", \"est_id\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/establishments?city_id={{city_id}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"establishments"
+							],
+							"query": [
+								{
+									"key": "city_id",
+									"value": "{{city_id}}"
+								},
+								{
+									"key": "lat",
+									"value": "{{latitude}}",
+									"disabled": true
+								},
+								{
+									"key": "long",
+									"value": "{{longitude}}",
+									"disabled": true
+								}
+							]
+						},
+						"description": "This will give all restaurents types in a city."
+					},
+					"response": []
+				},
+				{
+					"name": "GeoCodes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9052959d-ff0d-4c5b-a29c-cf86ec3ee8ce",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"nearby_res = jsonData.popularity.nearby_res[0];\r",
+									"pm.globals.set(\"res_id\", nearby_res);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/geocode?lat={{latitude}}&lon={{longitude}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"",
+								"geocode"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "{{latitude}}"
+								},
+								{
+									"key": "lon",
+									"value": "{{longitude}}"
+								}
+							]
+						},
+						"description": "This API will return geolocations and restaurent IDs based upon given geolocation."
+					},
+					"response": []
+				}
+			],
+			"description": "These are common APIs of Zomato.",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Restaurents",
+			"item": [
+				{
+					"name": "Restaurants",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "980f1cf6-c0cb-420b-be92-0eb012757140",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json;\r",
+									"City = jsonData.location.city;\r",
+									"pm.test(\"City Name is correct\", function(){\r",
+									"pm.expect(City).to.eql(pm.globals.get(\"city_name\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/restaurant?res_id={{res_id}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"restaurant"
+							],
+							"query": [
+								{
+									"key": "res_id",
+									"value": "{{res_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "43c3617e-d8c4-461a-b792-040cae23d53d",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/reviews?res_id={{res_id}}&start=0&count={{count}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "res_id",
+									"value": "{{res_id}}"
+								},
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "count",
+									"value": "{{count}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Daily Menu",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "04291ca9-5762-438d-9f3f-c46b560e8923",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/dailymenu?res_id={{res_id}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"dailymenu"
+							],
+							"query": [
+								{
+									"key": "res_id",
+									"value": "{{res_id}}"
+								}
+							]
+						},
+						"description": "Thise API will return daily menue for a restaurent."
+					},
+					"response": []
+				},
+				{
+					"name": "Reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9e1e300b-4699-4a3a-a5c3-8b115bb1fbe2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/reviews?res_id={{res_id}}&count={{count}}&start=0",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "res_id",
+									"value": "{{res_id}}",
+									"description": "Restaurent ID"
+								},
+								{
+									"key": "count",
+									"value": "{{count}}",
+									"description": "Total count of reviews needed"
+								},
+								{
+									"key": "start",
+									"value": "0",
+									"description": "Show reviews after 'Start count' that means from starting, or after first review or after second review etc."
+								}
+							]
+						},
+						"description": "This API will give reviews of a given restaurent."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Restaurents",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "28fddd70-205f-49b2-914f-3021b9debfbf",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/search?entity_id={{entity_id}}&entity_type={{entity_type}}&start=0&count={{count}}&radius=10&sort=cost&order=asc",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"search"
+							],
+							"query": [
+								{
+									"key": "entity_id",
+									"value": "{{entity_id}}"
+								},
+								{
+									"key": "entity_type",
+									"value": "{{entity_type}}"
+								},
+								{
+									"key": "q",
+									"value": "{{query}}",
+									"disabled": true
+								},
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "count",
+									"value": "{{count}}"
+								},
+								{
+									"key": "radius",
+									"value": "10"
+								},
+								{
+									"key": "cuisines",
+									"value": "north indian",
+									"disabled": true
+								},
+								{
+									"key": "lat",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "long",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "establishment_type",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "collection_id",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "cost"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						},
+						"description": "This API will return restaurents in a given location."
+					},
+					"response": []
+				}
+			],
+			"description": "These APIs will give search results for restaurents, their menues, reviews and restaurent details.",
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "user-key",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "b6b6f6e8ee337e63bbab701244fb34c8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "7cc1524f-9611-4f06-9676-53c505f8e651",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d4a75778-88c6-4143-8228-89e720a28304",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
